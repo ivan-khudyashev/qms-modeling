@@ -79,9 +79,8 @@ def test_B_func(gamma):
 def exp_flow_gen():
     return lambda exp_param_lambda:exp_dist(1.0/exp_param_lambda)
 
-def test_qms(cnt_experiment, T):
+def test_qms(cnt_experiment, T, gamma):
     input_l = 0.8
-    gamma = 0.5
     B = B_gen(B_func(gamma))
     avg_unserved = 0
     for i in range(0, cnt_experiment):
@@ -89,17 +88,23 @@ def test_qms(cnt_experiment, T):
     return avg_unserved / (cnt_experiment - 1.0)
 
 def qms_experiment_type1():
-    T = [1, 5, 10, 25, 50]
+    #T = [1, 5, 10, 25, 50]
+    T = [0.1, 1.0, 3.0, 5.0]
+    gamma = [1.0, 0.5, 0.25]
     T_len = len(T)
-    cur_i = 0
     cnt = 100000
-    res = []
-    for nextT in T:
-        cur_i = cur_i + 1
-        print(cur_i, " from ", T_len)
-        res.append(test_qms(cnt, nextT))
-    print(T)
-    print(res)
+    for next_gamma in gamma:
+        print("gamma = ", next_gamma)
+        cur_i = 0
+        res = []
+        for nextT in T:
+            cur_i = cur_i + 1
+            print(cur_i, " from ", T_len)
+            res.append(test_qms(cnt, nextT, next_gamma))
+        print("----------")
+        print("T = ", T)
+        print(res)
+        print("----------")
 
 if __name__ == "__main__":
     qms_experiment_type1()
