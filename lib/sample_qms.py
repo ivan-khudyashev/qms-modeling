@@ -1,6 +1,8 @@
 from numpy.random import exponential as exp_dist
 from numpy.random import random as uniform_dist
 from collections import OrderedDict
+from math import fabs
+from scipy.stats import norm as norm_distribution
 
 def qms(input_flow, B, T):
     """Queueing Model System
@@ -173,7 +175,25 @@ def Exponential_Flow_Factory(input_lambda):
     """
     return lambda :exp_dist(1.0/input_lambda)
 
-def experiment_series_qms(cnt_experiments, T, gamma, input_lambda):
+def experiment_series_qms(cnt_experiments, T, input_flow_F, B, gauss_cdf):
+    """Carry out <cnt_experiments> starts of QMS with defined input flow and service
+    function B.
+
+    Parameters
+    ----------
+    cnt_experiments : integer
+        Count of starts QMS
+    T : number
+        Interval of time (mean [0, T]) during which QMS serivece requests
+    input_flow_F : function
+        Random function which define when next request arrive in QMS
+    B : function
+        Random function which calculate next value of time when QMS evaluate next request
+    gauss_cdf : function
+        Cummulative Distribution Function of Normalize (Gauss) Probabilities Distribution
+        with integrated parameters _params_ = {mu: x, sigma: y}. Integration of parameters
+        must be executed outside of this method
+    """
     def add_experiment_res(qms_total_res, qms_current_res):
         """ Insert result of QMS work in ordered way. Ordered by count of 
         unserved(inwork, left) requests
@@ -210,33 +230,80 @@ def experiment_series_qms(cnt_experiments, T, gamma, input_lambda):
             # Hence this index already present in Total res dict
             # That why just increment this value
             qms_total_res["left_req_values"][qms_current_res["left"]] += 1
-    def handle_experiment_series_result():
-        pass
+
+    def discrette_gauss_aproximation(G):
+        """Discrete Gauss aproximation function
+        P(x,_params_) = (  G(x + 0.5, _params_) - G(x - 0.5, _params_) ) / ( 1 - G(-0.5, _params_))
+        This formula defined in scientific work and try normalize (by deletion on (1 - G(-0.5, _params_)) )
+        expected value of x requests in QMS. x requests defined by Cummulative Distribution Function(CDF) G - 
+        Normalize (Gauss) Distribution CDF with parameters _params_ = (mu, sigma). Here mu - mathematical
+        expectation, sigma - standard deviation (sigma**2 - variance or dispersion)
+        
+        Parameters
+        ----------
+        x : number
+            x-value for Gauss CDF
+        G : function
+            CDF of Normalize (Gauss) Probabilities Distribuion with parameters _params_
+            _params_ - dictionary
+            {
+            mu : number
+                mathematical expectation
+            sigma : number
+                standard deviation
+            }
+            Parameters of Normalize Probabilities Distribution
+
+        Returns
+        -------
+        number
+            Approximation value that in QMS left x requests after time is over
+        """
+        return lambda x:(G(x + 0.5) - G(x - 0.5)) / (1.0 - G(-0.5))
+
+    def handle_experiment_series_result(qms_total_res, n, gauss_aprox_F):
+        """Handle results of n starts of QMS and calculate some needed statistical values
+
+        Parameters
+        """
+        max_delta = -1 # Kolmogorov's distance
+        cur_delta = 0
+        for i in range(0, qms_total_res["current_len_left_req"]):
+            cur_delta += ( qms_total_res["left_req_values"][i] / n - gauss_aprox_F(i) )
+            if fabs(cur_delta) > max_delta:
+                max_delta = fabs(cur_delta)
+        return {"kolmogorov_distance": max_delta}
+
     def print_all_result(qms_total_res):
         for i in range(0, qms_total_res["current_len_left_req"]):
             print(i, qms_total_res["left_req_values"][i])
-    B = B_rand_factory(B_factory(gamma))
+
     qms_exp_total_result = {"current_len_left_req": 1, "left_req_values": OrderedDict([(0, 0)])}
     for i in range(0, cnt_experiments):
-        add_experiment_res(qms_exp_total_result, qms(Exponential_Flow_Factory(input_lambda), B, T) )
-    print(qms_exp_total_result)
-    print_all_result(qms_exp_total_result)
+        add_experiment_res(qms_exp_total_result, qms(input_flow_F, B, T) )
+    return handle_experiment_series_result(qms_exp_total_result, cnt_experiments, discrette_gauss_aproximation(gauss_cdf))
 
 def qms_experiment_type1():
     #T = [1, 5, 10, 25, 50]
     T = [0.1, 1.0, 3.0, 5.0]
     gamma = [1.0, 0.5, 0.25]
     input_lambda = 0.8
+    input_flow_F = Exponential_Flow_Factory(input_lambda)
     T_len = len(T)
-    cnt = 100000
+    # define Gauss CDF with _params_{mu, sigma}
+    mu = 0.0
+    sigma = 1.0
+    gauss_cdf = lambda x: norm_distribution.cdf(x, mu, sigma)
+    cnt = 10
     for next_gamma in gamma:
         print("gamma = ", next_gamma)
         cur_i = 0
         res = []
+        B = B_rand_factory(B_factory(next_gamma))
         for nextT in T:
             cur_i = cur_i + 1
             print(cur_i, " from ", T_len)
-            res.append(experiment_series_qms(cnt, nextT, next_gamma, input_lambda))
+            res.append(experiment_series_qms(cnt, nextT, input_flow_F, B, gass_cdf))
         print("----------")
         print("T = ", T)
         print(res)
