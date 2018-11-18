@@ -72,14 +72,14 @@ def B_factory(gamma):
         return y**gamma/(1.0 + y**gamma)
     return B_func_body
 
-def B_rand_factory(func_dist, steps_count = 100000, step_accuracy = 0.1):
+def F_rand_factory(cdf_func, steps_count = 100000, step_accuracy = 0.1):
     """ Define approximation for generated Random Value based on Distribution 
     Function in analitycal form. Return function-closure which generate 
-    random values according to defined Distribution Function
+    random values according to defined Cumulative Distribution Function(CDF)
     Parameters
     ----------
-    func_dist : function
-        Define analitycal Distribution Function for Random Value
+    cdf_func : function
+        Define analitycal CDF for Random Value
     steps_count : integer
         Internal variable. Define interval on Y-axes for more-closely approximation
         of ended value for generate Random Value. Besides Y-axes-interval defining by
@@ -91,24 +91,23 @@ def B_rand_factory(func_dist, steps_count = 100000, step_accuracy = 0.1):
     Returns
     -------
     function
-        Random function for generate value of Random Value with 
-        Distribution Function func_dist
+        Random function for generate value of Random Value with CDF func_dist
     """
     y = [0]*steps_count
-    cur_y = 0.0
+    cur_arg = 0.0
     for i in range(0, steps_count):
-        y[i] = func_dist(cur_y)
-        cur_y = cur_y + step_accuracy
-    def rand_func_B():
-        """Function which generate random value for defined Distribution Function
-        based on library Uniform Distribution
+        y[i] = cdf_func(cur_arg)
+        cur_arg += step_accuracy
+    def rand_func_CDF():
+        """Function which generate random value for defined CDF based on
+        library Uniform Distribution
         Parameters
         ----------
 
         Returns
         -------
         number
-            value of Random Value with defined Distribution Function
+            value of Random Value with defined CDF
         """
         x = uniform_dist()
         # find nearest y value according x
@@ -117,14 +116,14 @@ def B_rand_factory(func_dist, steps_count = 100000, step_accuracy = 0.1):
             cur_index = (borders[1] + borders[0]) // 2
             if borders[1] - borders[0] < 2:
                 break
-            if x > func_dist(y[cur_index]):
+            if x > cdf_func(y[cur_index]):
                 borders[0] = cur_index
             else:
                 borders[1] = cur_index
         find_index = borders[0]
         # TODO: when x out of range we need more accuracy
         
-        # Method of calculation F(x) (B(x) in our case)
+        # Method of calculation F(x)
         #  was taken from
         #  https://www.intuit.ru/studies/courses/643/499/lecture/11355?page=4#sect7
         # y - random value with distribution function F()
@@ -139,15 +138,15 @@ def B_rand_factory(func_dist, steps_count = 100000, step_accuracy = 0.1):
         #DEBUG
         y_k = y[borders[0]]
         # TODO: check why this happen
-        while func_dist(y_k) > x: # TODO: need to optimize!
+        while cdf_func(y_k) > x: # TODO: need to optimize!
             y_k = y_k - step_accuracy
         y_k_p_1 = y_k + step_accuracy
-        ret_val = y_k + ((x - func_dist(y_k)) * step_accuracy / (func_dist(y_k_p_1) - func_dist(y_k)) )
+        ret_val = y_k + ((x - cdf_func(y_k)) * step_accuracy / (cdf_func(y_k_p_1) - cdf_func(y_k)) )
         if ret_val > 1.0:
             # some cheat
             ret_val = 0.999 + (ret_val - 1.0) / (ret_val + 1.0) * 0.0001
         return ret_val
-    return rand_func_B
+    return rand_func_CDF
 
 def test_B_func(gamma):
     """Function for debug-purpose. Create analitycal Distribution Function
@@ -310,7 +309,14 @@ def qms_experiment_type1():
         print("----------")
 
 if __name__ == "__main__":
-    experiment_series_qms(100, 3.0, 1.0, 0.8)
+    mu = 0.0
+    sigma = 1.0
+    gauss_cdf = lambda x: norm_distribution.cdf(x, mu, sigma)
+    input_flow_F = Exponential_Flow_Factory(0.8)
+    B = B_rand_factory(B_factory(1.0))
+    res = experiment_series_qms(10, 3.0, input_flow_F, B, gauss_cdf)
+    print(res)
     #qms_experiment_type1()
     #test_B_func(0.5)
+    print("Finish modeling!")
 
