@@ -16,9 +16,8 @@ def Exponential_Flow_Factory(input_lambda):
     """
     return lambda :exp_dist(1.0/input_lambda)
 
-
 def single_generate_test():
-    input_lambda = 0.5
+    input_lambda = 1.0
     exp_dist_lib = Exponential_Flow_Factory(input_lambda)
     exp_hand = cdf_rand.F_rand_factory(cdf.Exp_factory(input_lambda))
     print("Lib realisation: ", exp_dist_lib())
@@ -39,6 +38,6 @@ def distrib_types(n, input_lambda):
 
 if __name__ == "__main__":
     #single_generate_test()
-    distrib_types(10000, 0.01)
+    distrib_types(10000, 0.001)
     print("Finish test Random Value with defined CDF!")
 
