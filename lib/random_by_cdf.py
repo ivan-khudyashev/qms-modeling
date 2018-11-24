@@ -120,11 +120,6 @@ def F_rand_factory(cdf_func):
             """
             if find_index < 0 or find_index >= len(f_vals):
                 return (None, None, None, None)
-            # DEBUG value type_interval:
-            # 0 - inside f_vals
-            # 1 - outside left f_vals
-            # 2 - outside right f_vals
-            type_interval = 0
             y_k = find_index * acc
             y_k_1 = y_k + acc
             f_k = f_vals[find_index]
@@ -133,14 +128,12 @@ def F_rand_factory(cdf_func):
                 if r_value > f_vals[find_index]:
                     f_k_1 = f_vals[find_index + 1]
                 else:
-                    type_interval = 1
                     y_k_1 = y_k
                     y_k -= acc
                     f_k_1 = f_k
                     f_k = f(y_k)
             elif find_index == len(f_vals) - 1:
                 if r_value > f_vals[find_index]:
-                    type_interval = 2
                     #TODO: make more accurate because true value of CDF(Y) may be
                     # too distance from f_vals[last_index] value
                     f_k_1 = f(y_k_1)
@@ -156,7 +149,7 @@ def F_rand_factory(cdf_func):
                 y_k -= acc
                 f_k_1 = f_k
                 f_k = f_vals[find_index - 1]
-            return y_k, y_k_1, f_k, f_k_1, type_interval
+            return y_k, y_k_1, f_k, f_k_1
         
         x = uniform_dist()
         # find nearest y value according x
@@ -185,6 +178,6 @@ def F_rand_factory(cdf_func):
         # MAIN equation: delta_F / delta_y = (x - F(y_k)) / (y - y_k)
         #
         # Hence: y = y_k + (x - F(y_k)) * delta_y / delta_F
-        y_k, y_k_p_1, cdf_k, cdf_k_p_1, type_interval = define_interval(cdf_func, CDF_vals, cur_index, step_accuracy, x)
-        return y_k + ( (x - cdf_k) * step_accuracy / (cdf_k_p_1 - cdf_k)  ), type_interval
+        y_k, y_k_p_1, cdf_k, cdf_k_p_1 = define_interval(cdf_func, CDF_vals, cur_index, step_accuracy, x)
+        return y_k + ( (x - cdf_k) * step_accuracy / (cdf_k_p_1 - cdf_k)  )
     return rand_func_CDF
