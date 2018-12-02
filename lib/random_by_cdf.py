@@ -1,9 +1,8 @@
 from numpy.random import random as uniform_dist
-from numpy.random import exponential as exp_dist
 import math
 
 def Flib_rand_factory(name, params):
-    """Define random function using library-methods of numpy
+    """Define random function using library-methods of scipy
 
     Parameters
     ----------
@@ -11,7 +10,7 @@ def Flib_rand_factory(name, params):
         Internal name for this Project identifying Distribution
     params : 
     """
-    #TODO: make enum type
+    #TODO: make enum type in commons
 
 def F_rand_factory(cdf_func):
     """ Define approximation for generated Random Value based on Distribution 
