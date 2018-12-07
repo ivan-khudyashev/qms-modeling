@@ -105,6 +105,7 @@ def CDF_factory(cdf_type, params):
     if not isinstance(cdf_type, commons.CDF_type):
         #TODO: throw exception
         return None
+    #TODO: check is this necessary to COPY this args
     final_args = commons.CDF_parameters_schema[cdf_type]
     # If some params match CDF schema parameters then redefine its
     if isinstance(params, dict):

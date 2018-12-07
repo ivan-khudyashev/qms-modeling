@@ -12,6 +12,7 @@ def Flib_rand_factory(name, params):
     """
     #TODO: make enum type in commons
 
+#TODO: add check for cdf_func is really CDF
 def F_rand_factory(cdf_func):
     """ Define approximation for generated Random Value based on Distribution 
     Function in analitycal form. Return function-closure which generate 
