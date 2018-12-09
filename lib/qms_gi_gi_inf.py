@@ -1,7 +1,8 @@
 from collections import OrderedDict
-from cdf import CDF_factory as build_cdf
-from random_by_cdf import F_rand_factory as gen_rand_f
-from commons import discrette_gauss_aproximation as P_i
+# Local imports
+from lib.cdf import CDF_factory as build_cdf
+from lib.random_by_cdf import F_rand_factory as gen_rand_f
+from lib.commons import discrette_gauss_aproximation as P_i
 
 def qms(input_flow_f, request_service_f, T):
     """Queueing Model System

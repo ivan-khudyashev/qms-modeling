@@ -1,4 +1,4 @@
-import commons
+import lib.commons as commons
 
 def main_test():
     print("commons CDF_parameters_schema:")

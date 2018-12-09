@@ -1,6 +1,8 @@
 import numpy as np
-import commons
-from cdf import CDF_factory
+# Local imports
+import path_correction
+import lib.commons as commons
+from lib.cdf import CDF_factory
 
 def print_CDF_values(cdf_f, vals):
     for x in vals:

@@ -1,7 +1,8 @@
 import math
-import commons
 from scipy.stats import norm as norm_distribution
 from scipy.stats import gamma as gamma_distribution
+# Local imports
+import lib.commons as commons
 
 def CDF_factory(cdf_type, params):
     """Factory for define CDF base on analitical or library representation.

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def tabulate_CDF_by_randCDF(rand_cdf, statistic_volume = 100000, is_cdf, x_max = 20, y_max_scale = 10, delta = 0.1):
+def tabulate_CDF_by_randCDF(rand_cdf, statistic_volume = 100000, is_cdf = True, x_max = 20, y_max_scale = 10, delta = 0.1):
     """Tabulate input rand_cdf CDF and build dots (x, y) for plotting inputed CDF
     """
     def found_interval(rand_val, delta, points_count):
