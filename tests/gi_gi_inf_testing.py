@@ -1,3 +1,12 @@
+import numpy as np
+#Local imports
+import path_correction
+from lib.io_module import load_gi_gi_inf_params as gigiinf_load
+from lib.qms_gi_gi_inf import experiment_series_qms as exp_series
+import lib.plot_module as plot_module
+import lib.commons as commons
+
+"""
 def qms_experiment_type1():
     #T = [1, 5, 10, 25, 50]
     T = [0.1, 1.0, 3.0, 5.0]
@@ -23,16 +32,37 @@ def qms_experiment_type1():
         print("T = ", T)
         print(res)
         print("----------")
+"""
+
+def gi_gi_inf_plottest():
+    gi_gi_inf_params = gigiinf_load()
+    input_flow = gi_gi_inf_params["input_flow"]
+    service_func = gi_gi_inf_params["service_func"]
+    gauss_cdf = gi_gi_inf_params["gauss_cdf"]
+    x_max = 10.0
+    cnt_tests = int(1e6)
+    x_in, y_in = plot_module.tabulate_CDF_by_randCDF(input_flow, cnt_tests, False, x_max, 1.0)
+    x_serv, y_serv = plot_module.tabulate_CDF_by_randCDF(service_func, cnt_tests, False, x_max, 1.0)
+    x_gauss = np.linspace(0.0, 5.0, 300)
+    plots = [
+        {"x": x_in, "y": y_in, "title": "Input flow PDF"},
+        {"x": x_serv, "y": y_serv, "title": "Serviced function"},
+        {"x": x_gauss, "y": np.array([gauss_cdf(x) for x in x_gauss]), "title": "Gauss approx base"}
+    ]
+    plot_module.draw_plots(plots, "Experiments")
+
+def gi_gi_inf_onetest():
+    gi_gi_inf_params = gigiinf_load()
+    input_flow = gi_gi_inf_params["input_flow"]
+    service_func = gi_gi_inf_params["service_func"]
+    T = gi_gi_inf_params["T"]
+    gauss_cdf = gi_gi_inf_params["gauss_cdf"]
+    ret_val = exp_series(input_flow, service_func, T, gauss_cdf, 1000)
+    print("Results of experiments' series:")
+    print(ret_val)
 
 if __name__ == "__main__":
-    mu = 0.0
-    sigma = 1.0
-    gauss_cdf = lambda x: norm_distribution.cdf(x, mu, sigma)
-    input_flow_F = Exponential_Flow_Factory(0.8)
-    B = B_rand_factory(B_factory(1.0))
-    res = experiment_series_qms(10, 3.0, input_flow_F, B, gauss_cdf)
-    print(res)
-    #qms_experiment_type1()
-    #test_B_func(0.5)
+    #gi_gi_inf_plottest()
+    gi_gi_inf_onetest()
     print("Finish modeling!")
 

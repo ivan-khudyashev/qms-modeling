@@ -21,6 +21,25 @@ CDF_parameters_schema = {
     CDF_type.B_SERVICE : {"gamma": 0.5}
 }
 
+#TODO: define schema such as can be possible automatic check
+"""Schema in JSON-type for start GI-GI-Inf system
+"""
+gi_gi_inf_input_schema = {
+    "input_flow_function": {
+        "type": "Enum CDF_type",
+        "parameters": "CDF_parameters_schema entry"
+    },
+    "serviced_time_function": {
+        "type": "Enum CDF_type",
+        "parameters": "CDF_parameters_schema entry"
+    },
+    "T": "number",
+    "gauss_apporximation": {
+        "mu": "number",
+        "dispersion": "number"
+    }
+}
+
 def discrette_gauss_aproximation(G):
     """Discrete Gauss aproximation function
     P(x,_params_) = (  G(x + 0.5, _params_) - G(x - 0.5, _params_) ) / ( 1 - G(-0.5, _params_))

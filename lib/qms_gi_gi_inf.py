@@ -1,3 +1,4 @@
+import math
 from collections import OrderedDict
 # Local imports
 from lib.cdf import CDF_factory as build_cdf
@@ -128,8 +129,8 @@ def experiment_series_qms(input_flow_f, request_service_f, T, gauss_cdf, cnt_exp
         cur_delta = 0
         for i in range(0, qms_total_res["current_len_left_req"]):
             cur_delta += ( qms_total_res["left_req_values"][i] / n - gauss_aprox_F(i) )
-            if fabs(cur_delta) > max_delta:
-                max_delta = fabs(cur_delta)
+            if math.fabs(cur_delta) > max_delta:
+                max_delta = math.fabs(cur_delta)
         return {"kolmogorov_distance": max_delta}
 
     def print_all_result(qms_total_res):
@@ -137,6 +138,12 @@ def experiment_series_qms(input_flow_f, request_service_f, T, gauss_cdf, cnt_exp
             print(i, qms_total_res["left_req_values"][i])
 
     qms_exp_total_result = {"current_len_left_req": 1, "left_req_values": OrderedDict([(0, 0)])}
+    #TODO: make normal progress bar
+    progress_cnt_intervals = 10
+    progress = 1
     for i in range(0, cnt_experiments):
+        if i >= (cnt_experiments // progress_cnt_intervals) * progress:
+            print("Progress: " + str(progress) + " of " + str(progress_cnt_intervals))
+            progress += 1
         add_experiment_res(qms_exp_total_result, qms(input_flow_f, request_service_f, T) )
     return handle_experiment_series_result(qms_exp_total_result, P_i(gauss_cdf), cnt_experiments)

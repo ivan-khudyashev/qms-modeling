@@ -1,0 +1,15 @@
+{
+    "input_flow_function": {
+        "type": "exponential",
+        "parameters": {"lambda_p": 0.45}
+    },
+    "serviced_time_function": {
+        "type": "B_service",
+        "parameters": {"gamma": 0.45}
+    },
+    "T": 5.0,
+    "gauss_aproximation": {
+        "mu": 0.1,
+        "dispersion": 0.05
+    }
+}
