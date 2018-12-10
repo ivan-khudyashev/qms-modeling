@@ -57,9 +57,12 @@ def gi_gi_inf_onetest():
     service_func = gi_gi_inf_params["service_func"]
     T = gi_gi_inf_params["T"]
     gauss_cdf = gi_gi_inf_params["gauss_cdf"]
-    ret_val = exp_series(input_flow, service_func, T, gauss_cdf, 1000)
-    print("Results of experiments' series:")
-    print(ret_val)
+    r = exp_series(input_flow, service_func, T, gauss_cdf, int(1e4))
+    plots = [
+        {"x": r["x_P_i1"], "y": r["y_P_i1"], "title": "QMS series test frequences"},
+        {"x": r["x_P_i"], "y": r["y_P_i"], "title": "Discrette Gauss Approximation"}
+    ]
+    plot_module.draw_plots(plots, "Experiment params here. Kolmogorov distance = " + str(r["kolmogorov_distance"]), True, "img/figure.jpg")
 
 if __name__ == "__main__":
     #gi_gi_inf_plottest()

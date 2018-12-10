@@ -42,7 +42,7 @@ def find_x_max(cdf_func, epsilon = 1e-3, delta_x = 3.0):
         x_max += delta_x
     return x_max
 
-def draw_plots(plots, figure_title):
+def draw_plots(plots, figure_title, is_save_infile = False, filename = "figure.jpg"):
     """Build grafics with all inputed plots
     
     Parameters
@@ -70,4 +70,7 @@ def draw_plots(plots, figure_title):
     plt.ylabel("y label")
     plt.title(figure_title)
     plt.legend()
+    if is_save_infile == True:
+        print("Saving file")
+        plt.savefig(filename)
     plt.show()

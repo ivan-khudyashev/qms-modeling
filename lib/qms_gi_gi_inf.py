@@ -131,7 +131,18 @@ def experiment_series_qms(input_flow_f, request_service_f, T, gauss_cdf, cnt_exp
             cur_delta += ( qms_total_res["left_req_values"][i] / n - gauss_aprox_F(i) )
             if math.fabs(cur_delta) > max_delta:
                 max_delta = math.fabs(cur_delta)
-        return {"kolmogorov_distance": max_delta}
+        # Define values for plotting distributions in returns
+        dots_for_smooth_figure = 1000
+        x_max = qms_total_res["current_len_left_req"] # need x_max - 1, because start from 0
+        x_P_i = [x/dots_for_smooth_figure for x in range(0, dots_for_smooth_figure * x_max) if x % x_max == 0]
+        return {
+            "kolmogorov_distance": max_delta,
+            "x_max": x_max - 1,
+            "x_P_i1": list(qms_total_res["left_req_values"].keys()),
+            "y_P_i1": [y / n for y in qms_total_res["left_req_values"].values()],
+            "x_P_i": x_P_i,
+            "y_P_i": [gauss_aprox_F(y) for y in x_P_i]
+        }
 
     def print_all_result(qms_total_res):
         for i in range(0, qms_total_res["current_len_left_req"]):

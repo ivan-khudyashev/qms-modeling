@@ -9,7 +9,7 @@
     },
     "T": 5.0,
     "gauss_aproximation": {
-        "mu": 5.0,
+        "mu": 9.0,
         "dispersion": 4.0
     }
 }
