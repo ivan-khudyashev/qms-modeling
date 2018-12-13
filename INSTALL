@@ -19,7 +19,18 @@ Windows
 
 2) Install python packages
 # make necessary aliases in all system
-sudo pip3 install numpy scipy matplotlib nose
+sudo pip3 install numpy scipy matplotlib nose pillow
+
+Info:
+* numpy - Base math-library for define n-dimmentional arrays
+* scipy - Big math-library including computation of Integrals and 
+  define probability distributions (CDF, PDF, rand-functions) and 
+  many others
+* matplotlib - library for building plots with figures of any type
+  Mostly 2D, though alfa-version of using 3D
+* nose - packet for testing
+* pillow - packet for process different grafical format (include 
+  jpg/jpeg which absent in base windows python's distributive)
 
 3) Using project
 Creation instruction: in process ...
