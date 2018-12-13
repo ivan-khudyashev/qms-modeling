@@ -1,2 +1,4 @@
 __pycache__/
 img/*.jpg
+img/*.png
+img/*.pdf
