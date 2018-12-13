@@ -69,8 +69,8 @@ def draw_plots(plots, figure_title, is_save_infile = False, filename = "figure.j
     plt.xlabel("x label")
     plt.ylabel("y label")
     plt.title(figure_title)
-    plt.legend()
+    #plt.legend()
     if is_save_infile == True:
         print("Saving file")
         plt.savefig(filename)
-    plt.show()
+    #plt.show()

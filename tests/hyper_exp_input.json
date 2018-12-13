@@ -1,3 +1,4 @@
+[
 {
     "input_flow_function": {
         "type": "hyper_exponential",
@@ -13,3 +14,4 @@
         "dispersion": 31.827
     }
 }
+]

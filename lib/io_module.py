@@ -51,17 +51,24 @@ def load_gi_gi_inf_params(filename="tests/gigiinf_input.json"):
     if not os.path.isfile(filename):
         return None
     json_params = json.load(open(filename))
-    if check_gi_gi_inf(json_params):
-        return {
-            "input_flow": gen_rand_func_from_json(json_params, "input_flow_function"),
-            "service_func": gen_rand_func_from_json(json_params, "serviced_time_function"),
-            "T": float(json_params["T"]),
-            "gauss_cdf": build_cdf(commons.CDF_type.GAUSS, {
-                "mu": json_params["gauss_aproximation"]["mu"],
-                "sigma": math.sqrt(json_params["gauss_aproximation"]["dispersion"])
-                }
-            )
-        }
-    #TODO: throw exception
-    print("Not valid schema")
-    return None
+    if not isinstance(json_params, list):
+        return None
+    # define parameters for return in QMS Experiment Series function
+    in_params = []
+    for param in json_params:
+        if check_gi_gi_inf(param):
+            in_params.append( {
+                "input_flow": gen_rand_func_from_json(param, "input_flow_function"),
+                "service_func": gen_rand_func_from_json(param, "serviced_time_function"),
+                "T": float(param["T"]),
+                "gauss_cdf": build_cdf(commons.CDF_type.GAUSS, {
+                    "mu": param["gauss_aproximation"]["mu"],
+                    "sigma": math.sqrt(param["gauss_aproximation"]["dispersion"])
+                    }
+                )
+        } )
+    if len(in_params) == 0:
+        #TODO: throw exception
+        print("Not valid schema")
+        return None
+    return in_params

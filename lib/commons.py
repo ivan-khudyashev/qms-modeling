@@ -9,7 +9,7 @@ class CDF_type(Enum):
     GAUSS = 2
     GAMMA = 3
     B_SERVICE = 4
-    HYPER_EXP = 5
+    HYPER_EXPONENTIAL = 5
 
 """Schema for defining name of parameters which using in
 definition CDF. This schema used in Factory which

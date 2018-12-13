@@ -115,27 +115,27 @@ def CDF_factory(cdf_type, params):
         lambda-closure
             CDF for Gamma-distribution
         """
-        return lambda x: gamma_distribution.cdf(x, alfa, 0.0, 1.0 / thetta)
+        return lambda x: gamma_distribution.cdf(x, alfa, 0.0, 1.0 / betta)
 
     def HyperExp_CDF(l1, l2, q):
-    """CDF of hyperexponential probabilities distribution
-    Common version of this distribution describes here:
-    https://en.wikipedia.org/wiki/Hyperexponential_distribution
-    CDF(x) = q*(1 - e^(-lambda_1 * x)) + (1 - q)*(1 - e^(-lambda2 * x))
+        """CDF of hyperexponential probabilities distribution
+        Common version of this distribution describes here:
+        https://en.wikipedia.org/wiki/Hyperexponential_distribution
+        CDF(x) = q*(1 - e^(-lambda_1 * x)) + (1 - q)*(1 - e^(-lambda2 * x))
 
-    Parameters
-    ----------
-    l1: number
-        lambda_1
-    l2: number
-        lambda_2
-    q: number
-        #TODO: define parameter
+        Parameters
+        ----------
+        l1: number
+            lambda_1
+        l2: number
+            lambda_2
+        q: number
+            #TODO: define parameter
 
-    Returns
-    lambda-closure
-        CDF for HyperExponential distribution
-    """
+        Returns
+        lambda-closure
+            CDF for HyperExponential distribution
+        """
         return lambda x:(q*(1 - math.exp(-l1 * x)) + (1 - q)*(1 - math.exp(-l2 * x)))
     
     # Process input and default params

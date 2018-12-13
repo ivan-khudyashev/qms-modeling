@@ -6,36 +6,8 @@ from lib.qms_gi_gi_inf import experiment_series_qms as exp_series
 import lib.plot_module as plot_module
 import lib.commons as commons
 
-"""
-def qms_experiment_type1():
-    #T = [1, 5, 10, 25, 50]
-    T = [0.1, 1.0, 3.0, 5.0]
-    gamma = [1.0, 0.5, 0.25]
-    input_lambda = 0.8
-    input_flow_F = Exponential_Flow_Factory(input_lambda)
-    T_len = len(T)
-    # define Gauss CDF with _params_{mu, sigma}
-    mu = 0.0
-    sigma = 1.0
-    gauss_cdf = lambda x: norm_distribution.cdf(x, mu, sigma)
-    cnt = 10
-    for next_gamma in gamma:
-        print("gamma = ", next_gamma)
-        cur_i = 0
-        res = []
-        B = B_rand_factory(B_factory(next_gamma))
-        for nextT in T:
-            cur_i = cur_i + 1
-            print(cur_i, " from ", T_len)
-            res.append(experiment_series_qms(cnt, nextT, input_flow_F, B, gass_cdf))
-        print("----------")
-        print("T = ", T)
-        print(res)
-        print("----------")
-"""
-
 def gi_gi_inf_plottest():
-    gi_gi_inf_params = gigiinf_load()
+    gi_gi_inf_params = gigiinf_load()[0]
     input_flow = gi_gi_inf_params["input_flow"]
     service_func = gi_gi_inf_params["service_func"]
     gauss_cdf = gi_gi_inf_params["gauss_cdf"]
@@ -51,21 +23,24 @@ def gi_gi_inf_plottest():
     ]
     plot_module.draw_plots(plots, "Experiments")
 
-def gi_gi_inf_onetest():
+def gi_gi_inf_test():
     gi_gi_inf_params = gigiinf_load()
-    input_flow = gi_gi_inf_params["input_flow"]
-    service_func = gi_gi_inf_params["service_func"]
-    T = gi_gi_inf_params["T"]
-    gauss_cdf = gi_gi_inf_params["gauss_cdf"]
-    r = exp_series(input_flow, service_func, T, gauss_cdf, int(1e4))
-    plots = [
-        {"x": r["x_P_i1"], "y": r["y_P_i1"], "title": "QMS series test frequences"},
-        {"x": r["x_P_i"], "y": r["y_P_i"], "title": "Discrette Gauss Approximation"}
-    ]
-    plot_module.draw_plots(plots, "Experiment params here. Kolmogorov distance = " + str(r["kolmogorov_distance"]), True, "img/figure.jpg")
+    param_num = 1
+    for param in gi_gi_inf_params:
+        input_flow = param["input_flow"]
+        service_func = param["service_func"]
+        T = param["T"]
+        gauss_cdf = param["gauss_cdf"]
+        r = exp_series(input_flow, service_func, T, gauss_cdf, int(1e5))
+        plots = [
+            {"x": r["x_P_i1"], "y": r["y_P_i1"], "title": "QMS series test frequences"},
+            {"x": r["x_P_i"], "y": r["y_P_i"], "title": "Discrette Gauss Approximation"}
+        ]
+        plot_module.draw_plots(plots, "Experiment params here. Kolmogorov distance = " + str(r["kolmogorov_distance"]), True, "img/figure" + str(param_num))
+        param_num += 1
 
 if __name__ == "__main__":
     #gi_gi_inf_plottest()
-    gi_gi_inf_onetest()
+    gi_gi_inf_test()
     print("Finish modeling!")
 

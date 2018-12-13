@@ -1,15 +1,17 @@
+[
 {
     "input_flow_function": {
-        "type": "gauss",
-        "parameters": {"mu": 3.0, "sigma": 2.0}
+        "type": "gamma",
+        "parameters": {"alfa": 5.0, "betta": 0.5}
     },
     "serviced_time_function": {
         "type": "B_service",
-        "parameters": {"gamma": 2.5}
+        "parameters": {"gamma": 1.0}
     },
-    "T": 10.0,
+    "T": 5.0,
     "gauss_aproximation": {
-        "mu": 3.0,
-        "dispersion": 2.0
+        "mu": 17.918,
+        "dispersion": 26.02
     }
 }
+]
