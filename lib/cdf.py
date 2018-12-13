@@ -78,29 +78,65 @@ def CDF_factory(cdf_type, params):
 
     def Gamma_CDF(alfa, betta):
         """CDF of Gamma probabilities distribution
-        https://en.wikipedia.org/wiki/Gamma_distribution
         In SciPy library gamma distribution have 3 parameters: <a>, <loc>, <scale>.
-        But in qms-modeling project using only 2: <a> and <scale>. Parameter <loc>
+        But in qms-modeling project using only 2: <alfa> and <betta>. Parameter <loc>
         is just offset on X-axis and it set to 0.0
         PDF in scipy-lib for this distribution define as
         PDF(x) = (x - loc)^(a - 1) * e^(-(x - loc)/scale) / (Г(a) * scale^a)
+        There are 2 independent groups of parameters according Wikipedia:
+        this https://en.wikipedia.org/wiki/Gamma_distribution:
+        * (k, thetta)
+        * (alfa, betta)
+        and third group defined in python libraries <scipy.stats.gamma>:
+        * (a, loc, scale)
+        It is accordance:
+        <a> the same as <k>
+        <loc> accordance nothing
+        <scale> the same as <thetta>
+        But in theoretical work we have group of parameters (alfa, betta) and
+        accordance:
+        <alfa> the same as <k>
+        <betta> the same as <scale>.
+        THEREFORE:
+        a = alfa
+        scale = 1.0 / betta
+        loc = 0.0
+        
 
         Parameters
         ----------
         alfa : number
-            This parameter define form of distribution (It correspond parameter <k>
-            in Wikipedia. And it correspond parameter <a> in library SciPy gamma
-            distribution)
+            This parameter define form of distribution
         betta: number
-            This parameter define scale of distribution (It correspond parameter <thetta>
-            in Wikipedia. And it correspond parameter <scale> in library SciPy gamma
-            distribution)
+            This parameter define scale of distribution
 
         Returns
         -------
         lambda-closure
+            CDF for Gamma-distribution
         """
-        return lambda x: gamma_distribution.cdf(x, alfa, 0.0, betta)
+        return lambda x: gamma_distribution.cdf(x, alfa, 0.0, 1.0 / thetta)
+
+    def HyperExp_CDF(l1, l2, q):
+    """CDF of hyperexponential probabilities distribution
+    Common version of this distribution describes here:
+    https://en.wikipedia.org/wiki/Hyperexponential_distribution
+    CDF(x) = q*(1 - e^(-lambda_1 * x)) + (1 - q)*(1 - e^(-lambda2 * x))
+
+    Parameters
+    ----------
+    l1: number
+        lambda_1
+    l2: number
+        lambda_2
+    q: number
+        #TODO: define parameter
+
+    Returns
+    lambda-closure
+        CDF for HyperExponential distribution
+    """
+        return lambda x:(q*(1 - math.exp(-l1 * x)) + (1 - q)*(1 - math.exp(-l2 * x)))
     
     # Process input and default params
     if not isinstance(cdf_type, commons.CDF_type):
@@ -124,6 +160,8 @@ def CDF_factory(cdf_type, params):
         choose_cdf = Gamma_CDF
     if cdf_type == commons.CDF_type.B_SERVICE:
         choose_cdf = B_service_CDF
+    if cdf_type == commons.CDF_type.HYPER_EXPONENTIAL:
+        choose_cdf = HyperExp_CDF
     if choose_cdf == None:
         #TODO: throw exception
         return None

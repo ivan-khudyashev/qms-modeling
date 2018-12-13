@@ -9,6 +9,7 @@ class CDF_type(Enum):
     GAUSS = 2
     GAMMA = 3
     B_SERVICE = 4
+    HYPER_EXP = 5
 
 """Schema for defining name of parameters which using in
 definition CDF. This schema used in Factory which
@@ -17,8 +18,9 @@ generated CDF.
 CDF_parameters_schema = {
     CDF_type.EXPONENTIAL: {"lambda_p": 0.5},
     CDF_type.GAUSS : {"mu": 1.0, "sigma": 0.5},
-    CDF_type.GAMMA : {"a": 1.0, "thetta": 1.0},
-    CDF_type.B_SERVICE : {"gamma": 0.5}
+    CDF_type.GAMMA : {"alfa": 1.0, "betta": 1.0},
+    CDF_type.B_SERVICE : {"gamma": 0.5},
+    CDF_type.HYPER_EXPONENTIAL : {"q": 0.5, "l1": 1.0, "l2": 2.0}
 }
 
 #TODO: define schema such as can be possible automatic check

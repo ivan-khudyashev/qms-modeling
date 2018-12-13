@@ -1,0 +1,15 @@
+{
+    "input_flow_function": {
+        "type": "hyper_exponential",
+        "parameters": {"q": 0.5, "l1": 6.0, "l2": 30.0}
+    },
+    "serviced_time_function": {
+        "type": "B_service",
+        "parameters": {"gamma": 1.0}
+    },
+    "T": 10.0,
+    "gauss_aproximation": {
+        "mu": 23.979,
+        "dispersion": 31.827
+    }
+}
